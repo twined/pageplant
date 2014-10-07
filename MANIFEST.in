@@ -1,0 +1,2 @@
+include README.md
+recursive-include pageplant *.py *.html *.js *.gif *.css

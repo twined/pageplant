@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+{% load crispy_forms_tags %}
+{% load static from staticfiles %}
+{% block css_extra %}
+    <link href="{% static 'css/fileuploader.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/autocomplete.css' %}" rel="stylesheet" type="text/css">
+{% endblock css_extra %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{% static 'js/libs/jquery/jquery.slugit.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'js/libs/jquery/jquery.debounce-1.0.5.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'js/libs/jquery/jquery.autocomplete.min.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'js/libs/backbone/underscore.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'js/libs/backbone/backbone.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'js/admin/pageplant.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'js/libs/ckeditor/ckeditor.js' %}" charset="utf-8"></script>
+{% endblock extra_js %}
+
+{% block content %}
+<h2>Rediger side</h2>
+<button class="m-b-sm btn btn-sm btn-default" role="button" onclick="$('#revision-table').toggle();">
+    <i class="glyphicon glyphicon-plus"> </i> Vis revisjoner
+</button>
+
+<table id="revision-table" class="table table-striped well" style="display:none;">
+    {% for v in version_list %}
+    <tr>
+        <td class="small">{{ v.revision.date_created|date:"d/m/Y H:i" }}</td>
+        <td class="small">{{ v.revision.user.get_full_name }}</td>
+        <td class="small">{{ v.revision.comment }}</td>
+        <td class="small" style="text-align:right;">
+            <a class="btn btn-xs btn-default" role="button" href="{% url 'admin:pageplant:edit-revert' pk=v.object.pk revision_id=v.revision_id %}">
+                <i class="glyphicon glyphicon-repeat"> </i> Reverser
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% crispy form %}
+
+{% if form.errors %}
+<div id="form-error">
+    <p>Feil i skjema.<br />Vennligst send inn igjen etter følgende feil er rettet:</p>
+    <ul>
+    {% for field in form %}
+    {% if field.errors %}<li>{{ field.label }} - {{ field.errors|striptags }}</li>{% endif %}
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>Sider – Vis</h1>
+
+<section class="panel panel-default">
+    <section class="panel-body">
+        {{ page.body|safe }}
+    </section>
+</section>
+<div class="form-actions">
+    <a href="{% url 'admin:pageplant:list' %}" class="btn btn-primary">
+        <i class="fa fa-list fa-fw"></i> Tilbake til oversikten
+    </a>
+    <a href="{% url 'admin:pageplant:update' post.pk %}" class="btn btn-default">
+        <i class="fa fa-edit fa-fw"></i> Editer siden
+    </a>
+    <a href="{% url 'admin:pageplant:delete' post.pk %}" class="btn btn-danger">
+        <i class="fa fa-edit fa-fw"></i> Slett siden
+    </a>
+</div>
+{% endblock content %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load static from staticfiles %}
+{% load i18n %}
+{% block opengraph_title %}{{ title_prefix }}{% endblock opengraph_title %}
+{% block title %}{{ title_prefix }}{% endblock title %}
+{% block content %}
+
+<div class="row">
+
+    <div id="pages" class="col-md-7">
+        <h2 class="section">{{ title_prefix }}</h2>
+        {% for page in pages %}
+        <div class="page-wrapper">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-header">
+                        <h2><a href="{{ page.get_absolute_url }}">{{ page.header }}</a></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="page">
+                        <div class="page-lead lead">
+                            {{ page.lead|safe }}
+                        </div>
+                        <div class="page-body">
+                            {{ page.body|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="meta">
+                        <div class="page-info">
+                            <span class="glyphicon glyphicon-time"></span>{% trans 'Posted' %} {{ page.created|date:"j F Y" }}<br>
+                        {% if page.tags.all %}
+                            <span class="glyphicon glyphicon-tags"></span>
+                            {% for tag in page.tags.all %}
+                                <a href="{% url 'pages:tag' tag.slug %}">{{ tag.name }}</a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+        {% if is_paginated %}
+            {% if page_obj.has_next %}
+            <nav id="page_nav">
+                <a href="?page={{ page_obj.next_page_number }}">{% trans 'next' %}</a>
+            </nav>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block after_js %}
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/pageplant/pageplant.js' %}"></script>
+{% endblock after_js %}

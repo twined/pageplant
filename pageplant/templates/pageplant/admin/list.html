@@ -1,0 +1,86 @@
+{% extends "admin/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<h1>Sider – oversikt</h1>
+
+<section class="panel">
+    <header class="panel-heading">
+    <span class="m-r-sm"><span class="status-publisert"><i class="fa fa-circle m-r-sm"> </i> </span> Publisert</span>
+    <span class="m-r-sm"><span class="status-venter"><i class="fa fa-circle m-r-sm"> </i> </span> Venter</span>
+    <span class="m-r-sm"><span class="status-kladd"><i class="fa fa-circle m-r-sm"> </i> </span> Utkast</span>
+    <span class="m-r-sm"><span class="status-slettet"><i class="fa fa-circle m-r-sm"> </i> </span> Slettet</span>
+    </header>
+
+    {% if pages %}
+    <table class="table">
+        <colgroup>
+            <col span="1" style="width: 50px; font-weight: bold;">
+            {% if pageplant_settings.multilanguage %}
+            <col span="1" style="width: 30px;">
+            {% endif %}
+            <col span="1" style="width: 60px;">
+            <col span="1" style="">
+            <col span="2" style="width: 60px;">
+            <col span="1" style="width: 140px;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th></th>
+                {% if pageplant_settings.multilanguage %}
+                <th></th>
+                {% endif %}
+                <th></th>
+                <th>Tittel</th>
+                <th class="center-text">Opprettet</th>
+                <th>Endret</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for page in pages %}
+                <tr>
+                    <td class="center-text">#<strong>{{ page.pk }}</strong></td>
+                    {% if pageplant_settings.multilanguage %}
+                    <td>
+                        <img src="{% static 'admin/img/blank.gif' %}" class="flag flag-{{ page.language }}" alt="{{ page.language }}" />
+                    </td>
+                    {% endif %}
+                    <td class="status-{{ page.status_class|lower }}">
+                        <i class="fa fa-circle"></i>
+                    </td>
+                    <td>
+
+                        {{ page.header }}
+                    </td>
+                    <td class="center-text text-muted">{{ page.created|date:"d/m/y" }}</td>
+                    <td class="center-text text-muted">{{ page.updated|date:"d/m/y" }}</td>
+                    <td>
+                        <a class="btn btn-rounded btn-sm btn-icon btn-default" title="Forhåndsvisning" href="{% url 'admin:pageplant:view' page.pk %}">
+                            <i class="fa fa-search"></i>
+                        </a>
+                        <a class="btn btn-rounded btn-sm btn-icon btn-default" title="Endre" href="{% url 'admin:pageplant:update' page.pk %}">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-rounded btn-sm btn-icon btn-default" title="Slett" href="{% url 'admin:pageplant:delete' page.pk %}">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <section class="panel-body">
+        <p>
+            <i class="fa fa-info-circle m-r-sm"></i> Ingen sider enda.
+        </p>
+    </section>
+    {% endif %}
+</section>
+
+<div class="form-actions">
+    <a href="{% url 'admin:pageplant:create' %}" class="btn btn-primary">
+        <i class="fa fa-plus fa-fw"></i> Ny side
+    </a>
+</div>
+{% endblock content %}

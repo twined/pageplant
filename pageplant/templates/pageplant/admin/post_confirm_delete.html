@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+{% block content %}
+            <h1>Slett side</h1>
+            <form action="" method="POST">{% csrf_token %}
+                <p class="lead">Er du sikker på at du vil slette denne siden? Den kan ikke gjenopprettes senere.</p>
+
+                <hr />
+                <input class="btn btn-danger" type="submit" value="Slett!" />
+            </form>
+
+{% endblock %}

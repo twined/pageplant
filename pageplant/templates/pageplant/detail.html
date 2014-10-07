@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load i18n %}
+{% block meta_keywords %}{% if page.tags %}{{ page.tags.all|join:"," }}{% endif %}{% endblock meta_keywords %}
+{% block opengraph_title %}{{ title_prefix }} | {{ page.header }}{% endblock opengraph_title %}
+
+{% block title %}{{ title_prefix }} | {{ page.header }}{% endblock title %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+            <div class="row">
+                <div class="page-header col-md-12">
+                    <h1>{{ page.header }}</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="page col-md-12">
+                    <div class="page-body">
+                        {{ page.body|safe }}
+                    </div>
+                </div>
+            </div>
+            {% comment %}
+            <div class="row">
+                <div class="meta col-md-12">
+                    <div class="page-info">
+                        {% trans 'Posted' %} {{ page.created|date:"j F Y" }}<br>
+                        {% for tag in page.tags.all %}
+                            <a href="{% url 'pageplant:tag' tag.slug %}">{{ tag.name }}</a>
+                            {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endcomment %}
+    </div>
+</div>
+{% endblock content %}

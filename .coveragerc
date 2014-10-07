@@ -1,0 +1,21 @@
+[run]
+branch = True
+cover_pylib = True
+
+[paths]
+source =
+    pageplant
+    #*/site-packages/pageplant
+
+[report]
+include =
+    pageplant/*
+    #*/site-packages/pageplant/*
+omit =
+    test_requirements.txt
+#    provider/oauth2/migrations/*
+#    provider/testcases
+#    provider/oauth2/tests
+exclude_lines =
+    raise NotImplementedError
+    pass
