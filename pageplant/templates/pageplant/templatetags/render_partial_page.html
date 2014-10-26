@@ -1,1 +1,5 @@
+{% if page.body %}
 {{ page.body|safe }}
+{% else %}
+{{ page|safe }}
+{% endif %}
