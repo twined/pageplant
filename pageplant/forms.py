@@ -9,6 +9,7 @@ from crispy_forms.layout import (Layout, Submit,
                                  Div, HTML, Field)
 
 from taggit.forms import TagField
+from cerebrum.fields import SlugField
 
 from .models import Page
 from .settings import PAGEPLANT_SETTINGS
@@ -52,68 +53,62 @@ class PageForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        Field.template = 'bootstrap/custom_field.html'
+        #  Field.template = 'bootstrap/custom_field.html'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
-                Div(
-                    Div(
-                        # 2
-                        Div(  # span7
-                            Field(
-                                'language'
-                            ),
-                            Field(
-                                'header',
-                                css_class="col-md-12 input-lg"
-                            ),
-                            Field(
-                                'slug',
-                            ),
-
-                            Field(
-                                'lead',
-                                css_class="col-md-12",
-                                style="height: 100px;"
-                            ),
-                            css_class='col-md-10'
-                        ),
-                        # Right column
-                        Div(
-                            Field('status',
-                                  css_class=""),
-                            css_class='col-md-2',
-                        ),
-                        css_class="row",
+                # 2
+                Div(  # span7
+                    Field(
+                        'language'
                     ),
-                    Div(  # row
-                        Div(  # md-12
-                            Field(
-                                'body',
-                            ),
-                            css_class="col-md-12",
-                        ),
-                        css_class="row",
+                    Field(
+                        'header',
+                        css_class="col-md-12 input-lg"
                     ),
-                    Div(  # row
-                        Div(  # span7
-                            Field(
-                                'tags',
-                            ),
-                            css_class='col-md-10',
-                        ),
-                        Div(  # span2
-                            Field(
-                                'publish_at'
-                            ),
-                            css_class='col-md-2',
-                        ),
-                        css_class='row'
+                    SlugField(
+                        'slug',
                     ),
-                    css_class="panel-body",
+                    css_class='col-md-10'
                 ),
-                css_class='panel panel-default',  # 2
-            )
+                # Right column
+                Div(
+                    Field('status',
+                          css_class=""),
+                    css_class='col-md-2',
+                ),
+                css_class="row",
+            ),
+            Div(  # row
+                Div(  # md-12
+                    Field(
+                        'body',
+                    ),
+                    css_class="col-md-12",
+                ),
+                Div(
+                    HTML(  # md-12
+                        '<button class="btn btn-small btn-error" type="button" id="toggleTemplateLock"><i class="fa fa-lock"> </i> L&aring;s opp mal</button>',
+                    ),
+                    css_class="col-md-12",
+                ),
+                css_class="row",
+            ),
+            Div(  # row
+                Div(  # span7
+                    Field(
+                        'tags',
+                    ),
+                    css_class='col-md-10',
+                ),
+                Div(  # span2
+                    Field(
+                        'publish_at'
+                    ),
+                    css_class='col-md-2',
+                ),
+                css_class='row'
+            ),
         )
         self.helper.add_input(
             Submit('submit', 'Lagre', css_class="btn btn-primary"))

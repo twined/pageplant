@@ -14,7 +14,8 @@ setup(
     description='Page generator for twined apps',
     long_description=open('README.md').read(),
     install_requires=[
-        "django-reversion >= 1.8.4"
+        "django-reversion >= 1.8.4",
+        "django-classy-tags",
     ],
     zip_safe=False,
 )

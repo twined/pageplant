@@ -1,5 +1,6 @@
 # pages.py
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -17,10 +18,12 @@ from cerebrum.views import LoginRequiredMixin
 from cerebrum.utils import json_response
 from imgin.views import (
     BaseImageCreateView, AJAXBaseImageHandleUploadView,
-    AJAXBaseImageDeleteView, BaseImageListView, BaseCKEDITORBrowserView
+    AJAXBaseImageDeleteView, BaseImageListView, BaseAJAXFroalaBrowserView,
+    BaseAJAXFroalaUploadView
 )
 
 import reversion
+from reversion.models import Version
 
 from ..models import Page, PageImage
 from ..forms import PageForm
@@ -33,9 +36,20 @@ def get_keywords(request, *args, **kwargs):
         'keywords': keywords,
     })
 
+
+class AJAXGetKeywordsView(LoginRequiredMixin, View):
+    """
+    AJAX: Returns keywords from the text
+    Not yet implemented
+    """
+    def get(self, request, *args, **kwargs):
+        keywords = request.GET['text']
+        return json_response({'keywords': keywords})
+
+
 @login_required
 def checkslug(request, pk=None, *args, **kwargs):
-    if not 'slug' in request.GET:
+    if 'slug' not in request.GET:
         # slug wasn't passed.
         return json_response({
             'status': 400,
@@ -62,7 +76,40 @@ def checkslug(request, pk=None, *args, **kwargs):
         'status': 200,
     })
 
-from reversion.models import Version
+
+class AJAXCheckSlugView(LoginRequiredMixin, View):
+    """
+    Checks given slug against the database
+    """
+    model = Page
+
+    def get(self, request, *args, **kwargs):
+        if 'slug' not in request.GET:
+            # slug wasn't passed.
+            return json_response({
+                'status': 400,
+                'error_msg': 'No slug passed to pages::checkslug'
+            })
+
+        slug = request.GET['slug'].lower()
+
+        if 'pk' in self.kwargs:
+            # it's an edit. it's ok if it's the same as before
+            obj = self.model.objects.get(pk=self.kwargs['pk'])
+            if obj.slug == slug:
+                return json_response({
+                    'status': 200,
+                })
+
+        if self.model.objects.all().filter(slug=slug):
+            return json_response({
+                'status': 300,
+                'error_msg': 'Overskriften eksisterer allerede'
+            })
+
+        return json_response({
+            'status': 200,
+        })
 
 
 class RevertPageView(LoginRequiredMixin, RedirectView):
@@ -131,12 +178,13 @@ class UpdatePageView(LoginRequiredMixin, UpdateView):
         context = super(UpdatePageView, self).get_context_data(**kwargs)
         context['body'] = self.object.body
         context['version_list'] = reversion.get_unique_for_object(self.object)
+        context['editor_css'] = settings.PAGEPLANT_SETTINGS['editor_css']
         return context
 
 
 class DeletePageView(LoginRequiredMixin, DeleteView):
     model = Page
-    template_name = "pageplant/admin/page_confirm_delete.html"
+    template_name = "pageplant/admin/delete.html"
     success_url = reverse_lazy('admin:pageplant:list')
 
     def delete(self, request, *args, **kwargs):
@@ -151,7 +199,9 @@ class AJAXAutoCompleteTagsView(View):
     """
     def get(self, request, *args, **kwargs):
         try:
-            tags = Tag.objects.filter(name__istartswith=request.GET['query']).values_list('name', flat=True)
+            tags = Tag.objects.filter(
+                name__istartswith=request.GET['query']).values_list(
+                    'name', flat=True)
         except MultiValueDictKeyError:
             tags = []
 
@@ -160,7 +210,11 @@ class AJAXAutoCompleteTagsView(View):
 # -image----------------------------------------------------------------
 
 
-class CKEDITORBrowserView(BaseCKEDITORBrowserView):
+class AJAXFroalaBrowserView(BaseAJAXFroalaBrowserView):
+    model = PageImage
+
+
+class AJAXFroalaUploadView(BaseAJAXFroalaUploadView):
     model = PageImage
 
 

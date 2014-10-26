@@ -21,7 +21,3 @@ class PageDetailView(CacheMixin, DetailView):
         context = super(PageDetailView, self).get_context_data(**kwargs)
         context['title_prefix'] = PAGEPLANT_SETTINGS['title_prefix']
         return context
-
-
-
-

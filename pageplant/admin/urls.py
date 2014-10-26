@@ -4,8 +4,10 @@ from pageplant.admin.views import (
     CreatePageView, ListPageView, UpdatePageView, DeletePageView,
     AddPageImageView, UploadPageImageView, ListPageImageView,
     RevertPageView,
-    AJAXDeletePageImageView, CKEDITORBrowserView, ViewPageView,
-    AJAXAutoCompleteTagsView
+    AJAXCheckSlugView, AJAXGetKeywordsView,
+    AJAXDeletePageImageView, ViewPageView,
+    AJAXAutoCompleteTagsView,
+    AJAXFroalaBrowserView, AJAXFroalaUploadView
 )
 
 urlpatterns = patterns(
@@ -40,11 +42,11 @@ urlpatterns = patterns(
         name="delete"),
     url(
         r'^ny/check-slug/$',
-        'checkslug',
+        AJAXCheckSlugView.as_view(),
         name="create-checkslug"),
     url(
         r'^endre/(?P<pk>\d+)/check-slug/$',
-        'checkslug',
+        AJAXCheckSlugView.as_view(),
         name="edit-checkslug"),
     url(
         r'^endre/(?P<pk>\d+)/revert-to-revision/(?P<revision_id>\d+)$',
@@ -52,18 +54,25 @@ urlpatterns = patterns(
         name="edit-revert"),
     url(
         r'^(ny|endre)/get-keywords/$',
-        'get_keywords',
+        AJAXGetKeywordsView.as_view(),
         name="get-keywords"),
     url(
         r'^(ny|endre)/(.*)/get-keywords/$',
-        'get_keywords',
+        AJAXGetKeywordsView.as_view(),
         name="get-keywords"),
 
-    # pageimages
+    # postimages
+    # ----------
+    # returns a json object of images to the froala browser
     url(
         r'^imgs/browser/$',
-        CKEDITORBrowserView.as_view(),
+        AJAXFroalaBrowserView.as_view(),
         name="browser"),
+    # uploads image to froala, returns the image as json
+    url(
+        r'^imgs/froala-upload/$',
+        AJAXFroalaUploadView.as_view(),
+        name="postimage-froala-upload"),
     url(
         r'^imgs/ny/$',
         AddPageImageView.as_view(),

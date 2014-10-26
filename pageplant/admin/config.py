@@ -1,9 +1,10 @@
 from django.core.urlresolvers import reverse_lazy
+from pageplant.settings import PAGEPLANT_SETTINGS
 
 
 APP_ADMIN_URLS = {
-    'url_base': 'pageplant',
-    'namespace': 'pageplant',
+    'url_base': PAGEPLANT_SETTINGS['url_base'],
+    'namespace': PAGEPLANT_SETTINGS['namespace'],
 }
 
 APP_ADMIN_MENU = {

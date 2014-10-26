@@ -43,7 +43,7 @@ class Page(models.Model):
     language = models.CharField(max_length=10, blank=True)
     header = models.CharField(
         max_length=255, null=False, blank=False,
-        verbose_name='Overskrift')
+        verbose_name='Tittel')
     slug = models.CharField(max_length=255, verbose_name="URL")
     body = models.TextField(verbose_name="Brødtekst", blank=True)
     user = models.ForeignKey(User, verbose_name="Bruker")
@@ -76,7 +76,7 @@ class Page(models.Model):
         Returns post's current status for use as css class
         """
         return self.PAGE_STATUS_TYPES[self.status][1]
-
+    '''
     def get_absolute_url(self):
         kwargs_dict = {
             "slug": self.slug,
@@ -85,6 +85,7 @@ class Page(models.Model):
             "day": self.created.day,
         }
         return reverse('pageplant:detail', kwargs=kwargs_dict)
+    '''
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -99,6 +100,8 @@ class Page(models.Model):
 
 
 def create_initial_revision(sender, **kwargs):
+    if kwargs['raw']:
+        return
     if kwargs['created']:
         page = kwargs['instance']
         with transaction.atomic(), reversion.create_revision():
@@ -109,6 +112,21 @@ def create_initial_revision(sender, **kwargs):
 # connect signals
 from django.db.models.signals import post_save, post_delete
 from .cache import invalidate_cache
+from actstream import action
+
+
+def projects_action_handler_save(sender, instance, created, **kwargs):
+    if kwargs['raw']:
+        return
+    if not created:
+        action.send(instance.user, verb='endret', target=instance)
+    else:
+        action.send(instance.user, verb='opprettet', target=instance)
+
+post_save.connect(
+    projects_action_handler_save, sender=Page,
+    dispatch_uid="Page.post_save.actstream"
+)
 post_save.connect(
     invalidate_cache, sender=Page,
     dispatch_uid="Page.post_save.invalidate"
@@ -126,6 +144,7 @@ post_delete.connect(
 
 reversion.register(Page)
 
+
 class PageImage(BaseImage):
     """
     Models an image for upload and use through post object.
@@ -137,24 +156,24 @@ class PageImage(BaseImage):
     @staticmethod
     def get_create_url(*args, **kwargs):
         return reverse(
-            'admin:pageplant:postimage-create'
+            'admin:pageplant:pageimage-create'
         )
 
     def get_delete_url():
         return reverse(
-            'admin:pageplant:postimage-delete'
+            'admin:pageplant:pageimage-delete'
         )
 
     @staticmethod
     def get_upload_url(*args, **kwargs):
         return reverse(
-            'admin:pageplant:postimage-upload'
+            'admin:pageplant:pageimage-upload'
         )
 
     @staticmethod
     def get_list_url(*args, **kwargs):
         return reverse(
-            'admin:pageplant:postimage-list'
+            'admin:pageplant:pageimage-list'
         )
 
     class Meta:

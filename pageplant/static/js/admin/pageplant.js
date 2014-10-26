@@ -1,6 +1,11 @@
 //
 
 (function($){
+    $.fn.outerHTML = function(s) {
+        return s
+            ? this.before(s).remove()
+            : jQuery("<p>").append(this.eq(0).clone()).html();
+    };
     $.fn.getStyleObject = function(){
         var dom = this.get(0);
         var style;
@@ -46,9 +51,55 @@ if (typeof String.prototype.startsWith != 'function') {
     return this.slice(0, str.length) == str;
   };
 }
-CKEDITOR_BASEPATH = '/static/js/libs/ckeditor/';
 
 $(document).ready(function() {
+    // froala editor
+    $('#id_body').editable({
+        theme: 'gray',
+        language: 'nb',
+        inlineMode: false,
+        // Set the load images request URL.
+        imagesLoadURL: "/admin/sider/imgs/browser/",
+        imageUploadURL: "/admin/sider/imgs/froala-upload/",
+        /* uses an Image model so no upload parameters are needed */
+        imageUploadParams: {
+            "upload_to": ""
+        },
+
+        defaultImageWidth: 0,
+        defaultBlockStyle: {
+            'f-test': 'Test'
+        },
+        minHeight: 300,
+        height: 500,
+        plainPaste: true
+    }).on('editable.imagesLoadError', function (e, editor, error) {
+        // Custom error message returned from the server.
+        if (error.code == 0) {
+            console.log('Custom error message returned from the server.');
+        }
+
+        // Bad link. One of the returned image links cannot be loaded.
+        else if (error.code == 1) {
+            console.log('Bad link. One of the returned image links cannot be loaded.');
+        }
+
+        // Error during HTTP request to load images.
+        else if (error.code == 2) {
+            console.log('Error during HTTP request to load images.');
+        }
+
+        // Missing imagesLoadURL option.
+        else if (error.code == 3) {
+            console.log('Missing imagesLoadURL option.');
+        }
+
+        // Parsing response failed.
+        else if (error.code == 4) {
+            console.log('Parsing response failed');
+        }
+    });
+
     // backbone
     new app.Posts.MainView();
 
@@ -59,11 +110,6 @@ $(document).ready(function() {
         tabDisabled: true,
         delimiter: ', '
     });
-
-    // ckeditor
-    CKEDITOR.replace( 'id_body', {
-        customConfig: '/static/js/ckeditor-config.js',
-    } );
 });
 
 /* backbone */
@@ -72,9 +118,10 @@ $(document).ready(function() {
 
 var app = app || {};
     app.vent = app.vent || _.extend({}, Backbone.Events);
-    app.Images = app.Images || {};
+    //app.Images = app.Images || {};
     app.Posts = app.Posts || {};
 
+    /*
     app.Images.UploadModalView = Backbone.View.extend({
         tagName: 'div',
         className: 'modal large',
@@ -417,20 +464,24 @@ var app = app || {};
             return this;
         }
     }),
+    */
 
     app.Posts.MainView = Backbone.View.extend({
 
         el: 'body',
 
         events: {
-            'submit form': 'clickSubmit'
+            'submit form': 'clickSubmit',
         },
 
         initialize: function() {
             that = this;
+
             new app.Posts.LeadView();
             new app.Posts.HeaderView();
             new app.Posts.KeywordsView();
+            new app.Posts.ToggleTemplateLockView();
+
             this.isDirty = false;
             app.vent.on('posts:change', this.markDirty, this);
 
@@ -449,8 +500,10 @@ var app = app || {};
                 e.preventDefault();
             }
             window.onbeforeunload = $.noop();
-            //$('#id_body').val($('#editor').getCode());
-            //$("form").submit(function() { window.onbeforeunload = $.noop; });
+            editor_html = '<div>' + $("#id_body").editable("getHTML") + '</div>';
+            var elements = $(editor_html);
+            elements.find('*').removeAttr('contenteditable');
+            $("#id_body").editable("setHTML", elements.html(), true);
         },
 
         checkForm: function() {
@@ -468,7 +521,7 @@ var app = app || {};
                 }, 5);
             }
 
-            // get the body from redactor.js!
+            // get the body from froala!
             console.log('clean bodytext here.');
             app.vent.trigger('redactor:clean');
 
@@ -477,6 +530,47 @@ var app = app || {};
 
         markDirty: function() {
             this.isDirty = true;
+        }
+    }),
+
+    app.Posts.ToggleTemplateLockView = Backbone.View.extend({
+        el: '#toggleTemplateLock',
+        sourceEl: '.froala-element',
+
+        locked: true,
+
+        events: {
+            'click': 'toggleTemplateLock'
+        },
+
+        initialize: function() {
+            this.lockTemplate(this.sourceEl);
+        },
+
+        lockTemplate: function(el) {
+            $('.locked', el).each(function() {
+                $(this).attr('contenteditable', 'false');
+            });
+            this.locked = true;
+        },
+
+        unlockTemplate: function(el) {
+            $('.locked', el).each(function() {
+                $(this).attr('contenteditable', 'true');
+            });
+            this.locked = false;
+        },
+
+        toggleTemplateLock: function(e) {
+            if (this.locked) {
+                this.unlockTemplate(this.sourceEl);
+                this.$el.html('<i class="fa fa-lock"> </i> Lås mal');
+
+            } else {
+                this.lockTemplate(this.sourceEl);
+                this.$el.html('<i class="fa fa-lock"> </i> Lås opp mal');
+            }
+            e.preventDefault();
         }
     }),
 
@@ -566,7 +660,6 @@ var app = app || {};
             } else if (data.status == 400) {
                 app.vent.trigger('posts:header:error', data);
                 that.slugError();
-
             } else {
                 app.vent.trigger('posts:header:exists', data);
                 that.slugExists();
