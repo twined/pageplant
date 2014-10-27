@@ -44,7 +44,7 @@ class Page(models.Model):
     header = models.CharField(
         max_length=255, null=False, blank=False,
         verbose_name='Tittel')
-    slug = models.CharField(max_length=255, verbose_name="URL")
+    slug = models.CharField(max_length=255, verbose_name="URL", db_index=True)
     body = models.TextField(verbose_name="Brødtekst", blank=True)
     user = models.ForeignKey(User, verbose_name="Bruker")
     status = models.IntegerField(
@@ -56,7 +56,7 @@ class Page(models.Model):
         default=datetime.now, verbose_name='Publiseringstidspunkt')
     published = models.DateTimeField(
         null=True, blank=True, editable=False,
-        verbose_name='Publisert')
+        verbose_name='Publisert', db_index=True)
     meta_keywords = models.CharField(
         max_length=255,
         null=True,
