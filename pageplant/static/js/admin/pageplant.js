@@ -53,6 +53,10 @@ if (typeof String.prototype.startsWith != 'function') {
 }
 
 $(document).ready(function() {
+    // set that pesky token!
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
     // froala editor
     $('#id_body').editable({
         theme: 'gray',
