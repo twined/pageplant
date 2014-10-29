@@ -28,16 +28,16 @@ class Page(models.Model):
     """
     Page model
     """
-    PS_DRAFT = 0
-    PS_WAITING = 1
-    PS_PUBLISHED = 2
-    PS_DELETED = 3
+    STATUS_DRAFT = 0
+    STATUS_WAITING = 1
+    STATUS_PUBLISHED = 2
+    STATUS_DELETED = 3
 
     PAGE_STATUS_TYPES = (
-        (PS_DRAFT, 'Kladd'),
-        (PS_WAITING, 'Venter'),
-        (PS_PUBLISHED, 'Publisert'),
-        (PS_DELETED, 'Slettet'),
+        (STATUS_DRAFT, 'Kladd'),
+        (STATUS_WAITING, 'Venter'),
+        (STATUS_PUBLISHED, 'Publisert'),
+        (STATUS_DELETED, 'Slettet'),
     )
 
     language = models.CharField(max_length=10, blank=True)

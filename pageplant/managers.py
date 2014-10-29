@@ -12,7 +12,7 @@ class PublishedPagesManager(models.Manager):
     """
     def get_queryset(self):
         qs = super(PublishedPagesManager, self).get_queryset()
-        qs = qs.filter(status__exact=self.model.PS_PUBLISHED,
+        qs = qs.filter(status__exact=self.model.STATUS_PUBLISHED,
                        publish_at__lte=datetime.now())
         if PAGEPLANT_SETTINGS['multilanguage']:
             qs = qs.filter(language=get_language())
