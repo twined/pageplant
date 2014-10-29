@@ -14,7 +14,7 @@ from django.views.generic import (
 )
 
 from taggit.models import Tag
-from cerebrum.views import LoginRequiredMixin
+from cerebrum.views import LoginRequiredMixin, DispatchProtectionMixin
 from cerebrum.utils import json_response
 from imgin.views import (
     BaseImageCreateView, AJAXBaseImageHandleUploadView,
@@ -136,7 +136,8 @@ class ViewPageView(LoginRequiredMixin, DetailView):
     template_name = "pageplant/admin/detail.html"
 
 
-class CreatePageView(LoginRequiredMixin, CreateView):
+class CreatePageView(DispatchProtectionMixin,
+                     LoginRequiredMixin, CreateView):
     form_class = PageForm
     template_name = "pageplant/admin/form.html"
     success_url = reverse_lazy('admin:pageplant:list')
@@ -155,7 +156,8 @@ class CreatePageView(LoginRequiredMixin, CreateView):
         return super(CreatePageView, self).form_invalid(form)
 
 
-class UpdatePageView(LoginRequiredMixin, UpdateView):
+class UpdatePageView(DispatchProtectionMixin,
+                     LoginRequiredMixin, UpdateView):
     model = Page
     form_class = PageForm
     template_name = "pageplant/admin/form.html"
