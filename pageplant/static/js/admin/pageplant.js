@@ -77,31 +77,9 @@ $(document).ready(function() {
         minHeight: 300,
         height: 500,
         plainPaste: true
-    }).on('editable.imagesLoadError', function (e, editor, error) {
+    }).on('editable.imageError', function (e, editor, error) {
         // Custom error message returned from the server.
-        if (error.code == 0) {
-            console.log('Custom error message returned from the server.');
-        }
-
-        // Bad link. One of the returned image links cannot be loaded.
-        else if (error.code == 1) {
-            console.log('Bad link. One of the returned image links cannot be loaded.');
-        }
-
-        // Error during HTTP request to load images.
-        else if (error.code == 2) {
-            console.log('Error during HTTP request to load images.');
-        }
-
-        // Missing imagesLoadURL option.
-        else if (error.code == 3) {
-            console.log('Missing imagesLoadURL option.');
-        }
-
-        // Parsing response failed.
-        else if (error.code == 4) {
-            console.log('Parsing response failed');
-        }
+        alert(error.message);
     });
 
     // backbone

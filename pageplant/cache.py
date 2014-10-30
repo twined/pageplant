@@ -1,8 +1,8 @@
-from django.core.cache import cache
+from cerebrum.cache import cache_delete_pattern
 
 
 def invalidate_cache(sender, **kwargs):
     """
     Invalidates all views using Page object
     """
-    cache.delete_pattern('pageplant.*')
+    cache_delete_pattern('pageplant.*')
