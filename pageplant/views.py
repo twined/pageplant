@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import DetailView
 
-from hiver.views import CacheMixin
-
 from .models import Page
 from .settings import PAGEPLANT_SETTINGS
 
 
-class PageDetailView(CacheMixin, DetailView):
+class PageDetailView(DetailView):
     model = Page
     context_object_name = "page"
     template_name = "pageplant/detail.html"
-    cache_path = "pageplant.view"
 
     def get_queryset(self):
         return Page.published.all().filter(
