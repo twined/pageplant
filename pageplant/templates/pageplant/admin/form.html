@@ -37,7 +37,7 @@
             <td class="small">{{ v.revision.user.get_full_name }}</td>
             <td class="small">{{ v.revision.comment }}</td>
             <td class="small" style="text-align:right;">
-                <a class="btn btn-xs btn-default" role="button" href="{% url 'admin:pageplant:edit-revert' pk=v.object.pk revision_id=v.revision_id %}">
+                <a class="btn btn-xs btn-default" role="button" href="{% url 'admin:pages:edit-revert' pk=v.object.pk revision_id=v.revision_id %}">
                     <i class="glyphicon glyphicon-repeat"> </i> Reverser
                 </a>
             </td>

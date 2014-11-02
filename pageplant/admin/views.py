@@ -15,31 +15,21 @@ from django.views.generic import UpdateView
 
 from cerebrum.mixins import LoginRequiredMixin
 from cerebrum.mixins import DispatchProtectionMixin
-from cerebrum.views import BaseAJAXCheckSlugView
 
 from imgin.views import BaseImageCreateView
 from imgin.views import AJAXBaseImageHandleUploadView
 from imgin.views import AJAXBaseImageDeleteView
 from imgin.views import BaseImageListView
-from imgin.views import BaseAJAXFroalaBrowserView
-from imgin.views import BaseAJAXFroalaUploadView
 
 import reversion
 from reversion.models import Version
 
-from ..forms import PageForm
-from ..models import Page
-from ..models import PageImage
+from ..forms import BasePageForm
+from ..models import BasePage
+from ..models import BasePageImage
 
 
-class AJAXCheckSlugView(BaseAJAXCheckSlugView):
-    """
-    Checks given slug against the database
-    """
-    model = Page
-
-
-class RevertPageView(LoginRequiredMixin, RedirectView):
+class BaseRevertPageView(LoginRequiredMixin, RedirectView):
     permanent = False
     query_string = True
 
@@ -47,28 +37,28 @@ class RevertPageView(LoginRequiredMixin, RedirectView):
         revision = Version.objects.get(pk=kwargs['revision_id'])
         revision.revision.revert()
         return reverse_lazy(
-            'admin:pageplant:update', kwargs={'pk': kwargs['pk']})
+            'admin:pages:update', kwargs={'pk': kwargs['pk']})
 
 
-class ListPageView(LoginRequiredMixin, ListView):
-    model = Page
+class BaseListPageView(LoginRequiredMixin, ListView):
+    model = BasePage
     context_object_name = "pages"
     template_name = "pageplant/admin/list.html"
 
     def get_queryset(self):
-        return Page.objects.order_by('status', '-pk')
+        return self.model.objects.order_by('status', '-pk')
 
 
-class ViewPageView(LoginRequiredMixin, DetailView):
-    model = Page
+class BaseViewPageView(LoginRequiredMixin, DetailView):
+    model = BasePage
     template_name = "pageplant/admin/detail.html"
 
 
-class CreatePageView(DispatchProtectionMixin,
-                     LoginRequiredMixin, CreateView):
-    form_class = PageForm
+class BaseCreatePageView(DispatchProtectionMixin,
+                         LoginRequiredMixin, CreateView):
+    form_class = BasePageForm
     template_name = "pageplant/admin/form.html"
-    success_url = reverse_lazy('admin:pageplant:list')
+    success_url = reverse_lazy('admin:pages:list')
 
     def form_valid(self, form):
         with transaction.atomic(), reversion.create_revision():
@@ -77,19 +67,19 @@ class CreatePageView(DispatchProtectionMixin,
             messages.success(self.request, "Siden er lagret.",
                              extra_tags='msg')
             reversion.set_user(self.request.user)
-        return super(CreatePageView, self).form_valid(form)
+        return super(BaseCreatePageView, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, "Rett feilene under")
-        return super(CreatePageView, self).form_invalid(form)
+        return super(BaseCreatePageView, self).form_invalid(form)
 
 
-class UpdatePageView(DispatchProtectionMixin,
-                     LoginRequiredMixin, UpdateView):
-    model = Page
-    form_class = PageForm
+class BaseUpdatePageView(DispatchProtectionMixin,
+                         LoginRequiredMixin, UpdateView):
+    model = BasePage
+    form_class = BasePageForm
     template_name = "pageplant/admin/form.html"
-    success_url = reverse_lazy('admin:pageplant:list')
+    success_url = reverse_lazy('admin:pages:list')
 
     def form_valid(self, form):
         with transaction.atomic(), reversion.create_revision():
@@ -98,24 +88,24 @@ class UpdatePageView(DispatchProtectionMixin,
             messages.success(self.request, "Endringen var vellykket.",
                              extra_tags='msg')
             reversion.set_user(self.request.user)
-            return super(UpdatePageView, self).form_valid(form)
+            return super(BaseUpdatePageView, self).form_valid(form)
 
     def form_invalid(self, form):
         messages.error(self.request, "Rett feilene under")
-        return super(UpdatePageView, self).form_invalid(form)
+        return super(BaseUpdatePageView, self).form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        context = super(UpdatePageView, self).get_context_data(**kwargs)
+        context = super(BaseUpdatePageView, self).get_context_data(**kwargs)
         context['body'] = self.object.body
         context['version_list'] = reversion.get_unique_for_object(self.object)
         context['editor_css'] = settings.PAGEPLANT_SETTINGS['editor_css']
         return context
 
 
-class DeletePageView(LoginRequiredMixin, DeleteView):
-    model = Page
+class BaseDeletePageView(LoginRequiredMixin, DeleteView):
+    model = BasePage
     template_name = "pageplant/admin/delete.html"
-    success_url = reverse_lazy('admin:pageplant:list')
+    success_url = reverse_lazy('admin:pages:list')
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -123,30 +113,19 @@ class DeletePageView(LoginRequiredMixin, DeleteView):
         return redirect(self.get_success_url())
 
 
-# -image----------------------------------------------------------------
+class BaseAddPageImageView(LoginRequiredMixin, BaseImageCreateView):
+    model = BasePageImage
 
 
-class AJAXFroalaBrowserView(BaseAJAXFroalaBrowserView):
-    model = PageImage
+class BaseListPageImageView(LoginRequiredMixin, BaseImageListView):
+    model = BasePageImage
 
 
-class AJAXFroalaUploadView(BaseAJAXFroalaUploadView):
-    model = PageImage
+class BaseUploadPageImageView(LoginRequiredMixin,
+                              AJAXBaseImageHandleUploadView):
+    model = BasePageImage
 
 
-class AddPageImageView(LoginRequiredMixin, BaseImageCreateView):
-    model = PageImage
-
-
-class ListPageImageView(LoginRequiredMixin, BaseImageListView):
-    model = PageImage
-
-
-class UploadPageImageView(LoginRequiredMixin,
-                          AJAXBaseImageHandleUploadView):
-    model = PageImage
-
-
-class AJAXDeletePageImageView(LoginRequiredMixin,
-                              AJAXBaseImageDeleteView):
-    model = PageImage
+class BaseAJAXDeletePageImageView(LoginRequiredMixin,
+                                  AJAXBaseImageDeleteView):
+    model = BasePageImage
