@@ -14,11 +14,11 @@ from crispy_forms.layout import Field
 from taggit.forms import TagField
 from cerebrum.fields import SlugField
 
-from .models import Page
+from .models import BasePage
 from .settings import PAGEPLANT_SETTINGS
 
 
-class PageForm(forms.ModelForm):
+class BasePageForm(forms.ModelForm):
     tags = TagField(
         label="Tags",
         required=False,
@@ -29,7 +29,7 @@ class PageForm(forms.ModelForm):
     )
     status = forms.ChoiceField(
         required=True,
-        widget=forms.RadioSelect(), choices=Page.PAGE_STATUS_TYPES,
+        widget=forms.RadioSelect(), choices=BasePage.PAGE_STATUS_TYPES,
         initial='0'
     )
     language = forms.ChoiceField(
@@ -56,7 +56,6 @@ class PageForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        #  Field.template = 'bootstrap/custom_field.html'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
@@ -116,8 +115,8 @@ class PageForm(forms.ModelForm):
         self.helper.add_input(
             Submit('submit', 'Lagre', css_class="btn btn-primary"))
 
-        super(PageForm, self).__init__(*args, **kwargs)
+        super(BasePageForm, self).__init__(*args, **kwargs)
 
     class Meta:
-        model = Page
+        model = BasePage
         exclude = ('user',)

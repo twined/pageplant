@@ -12,7 +12,6 @@ from .settings import PAGEPLANT_SETTINGS
 
 
 def config(request):
-
     cfg = PAGEPLANT_SETTINGS
     return {'pageplant_settings': cfg}
 

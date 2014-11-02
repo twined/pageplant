@@ -62,20 +62,20 @@
                             </a>
                             <ul class="dropdown-menu" style="right: 0; left: auto;">
                                 <li>
-                                    <a href="{% url 'admin:pageplant:view' page.pk %}">
+                                    <a href="{% url 'admin:pages:view' page.pk %}">
                                         <i class="fa fa-search m-r-sm"> </i>
                                         Vis side
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'admin:pageplant:update' page.pk %}">
+                                    <a href="{% url 'admin:pages:update' page.pk %}">
                                         <i class="fa fa-edit m-r-sm"> </i>
                                         Endre side
                                     </a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
-                                    <a href="{% url 'admin:pageplant:delete' page.pk %}">
+                                    <a href="{% url 'admin:pages:delete' page.pk %}">
                                         <i class="fa fa-trash-o m-r-sm"> </i>
                                         Slett side
                                     </a>
@@ -95,7 +95,7 @@
 </section>
 
 <div class="form-actions">
-    <a href="{% url 'admin:pageplant:create' %}" class="btn btn-primary">
+    <a href="{% url 'admin:pages:create' %}" class="btn btn-primary">
         <i class="fa fa-plus fa-fw"></i> Ny side
     </a>
 </div>

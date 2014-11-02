@@ -23,7 +23,7 @@ from taggit.managers import TaggableManager
 from .managers import PublishedPagesManager
 
 
-class Page(models.Model):
+class BasePage(models.Model):
     """
     Page model
     """
@@ -75,27 +75,18 @@ class Page(models.Model):
         Returns post's current status for use as css class
         """
         return self.PAGE_STATUS_TYPES[self.status][1]
-    '''
-    def get_absolute_url(self):
-        kwargs_dict = {
-            "slug": self.slug,
-            "year": self.created.year,
-            "month": self.created.month,
-            "day": self.created.day,
-        }
-        return reverse('pageplant:detail', kwargs=kwargs_dict)
-    '''
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.header)
-        super(Page, self).save(*args, **kwargs)
+        super(BasePage, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.header
 
     class Meta:
         ordering = ('-created',)
+        abstract = True
 
 
 def create_initial_revision(sender, **kwargs):
@@ -108,10 +99,15 @@ def create_initial_revision(sender, **kwargs):
             reversion.set_user(page.user)
             reversion.set_comment("Orginal versjon")
 
+
+'''
+move this to own project
+
 # connect signals
 from django.db.models.signals import post_save, post_delete
 from .cache import invalidate_cache
 from actstream import action
+from pageplant.models import create_initial_revision
 
 
 def projects_action_handler_save(sender, instance, created, **kwargs):
@@ -143,8 +139,10 @@ post_delete.connect(
 
 reversion.register(Page)
 
+'''
 
-class PageImage(BaseImage):
+
+class BasePageImage(BaseImage):
     """
     Models an image for upload and use through post object.
     Needs IMGIN
@@ -176,8 +174,12 @@ class PageImage(BaseImage):
         )
 
     class Meta:
+        abstract = True
         verbose_name = 'Sidebilde'
         verbose_name_plural = 'Sidebilder'
+
+'''
+move out
 
 # connect signals
 from django.db.models.signals import post_save, post_delete
@@ -190,3 +192,4 @@ post_delete.connect(
     invalidate_cache, sender=PageImage,
     dispatch_uid="PageImage.post_delete.invalidate"
 )
+'''
