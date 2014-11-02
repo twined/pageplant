@@ -2,7 +2,6 @@
 {% load crispy_forms_tags %}
 {% load static from staticfiles %}
 {% block css_extra %}
-    <link href="{% static 'css/autocomplete.css' %}" rel="stylesheet" type="text/css">
     <!-- froala css includes -->
     <link href="{% static 'js/libs/froala/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'js/libs/froala/css/froala_editor.min.css' %}" rel="stylesheet" type="text/css" />
@@ -11,11 +10,6 @@
 {% endblock css_extra %}
 
 {% block extra_js %}
-<script type="text/javascript" src="{% static 'js/libs/jquery/jquery.slugit.js' %}" charset="utf-8"></script>
-<script type="text/javascript" src="{% static 'js/libs/jquery/jquery.debounce-1.0.5.js' %}" charset="utf-8"></script>
-<script type="text/javascript" src="{% static 'js/libs/jquery/jquery.autocomplete.min.js' %}" charset="utf-8"></script>
-<script type="text/javascript" src="{% static 'js/libs/backbone/underscore.js' %}" charset="utf-8"></script>
-<script type="text/javascript" src="{% static 'js/libs/backbone/backbone.js' %}" charset="utf-8"></script>
 <script type="text/javascript" src="{% static 'js/admin/pageplant.js' %}" charset="utf-8"></script>
 
 <!-- froala js includes -->

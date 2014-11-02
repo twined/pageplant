@@ -1,14 +1,21 @@
 from django.conf.urls import patterns, url
 
-from pageplant.admin.views import (
-    CreatePageView, ListPageView, UpdatePageView, DeletePageView,
-    AddPageImageView, UploadPageImageView, ListPageImageView,
-    RevertPageView,
-    AJAXCheckSlugView, AJAXGetKeywordsView,
-    AJAXDeletePageImageView, ViewPageView,
-    AJAXAutoCompleteTagsView,
-    AJAXFroalaBrowserView, AJAXFroalaUploadView
-)
+from cerebrum.views import AJAXGetKeywordsView
+from cerebrum.views import AJAXAutoCompleteTagsView
+
+from pageplant.admin.views import CreatePageView
+from pageplant.admin.views import ListPageView
+from pageplant.admin.views import UpdatePageView
+from pageplant.admin.views import DeletePageView
+from pageplant.admin.views import AddPageImageView
+from pageplant.admin.views import UploadPageImageView
+from pageplant.admin.views import ListPageImageView
+from pageplant.admin.views import RevertPageView
+from pageplant.admin.views import AJAXCheckSlugView
+from pageplant.admin.views import AJAXDeletePageImageView
+from pageplant.admin.views import ViewPageView
+from pageplant.admin.views import AJAXFroalaBrowserView
+from pageplant.admin.views import AJAXFroalaUploadView
 
 urlpatterns = patterns(
     'pageplant.admin.views',

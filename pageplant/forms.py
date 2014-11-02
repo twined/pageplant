@@ -5,8 +5,11 @@ import datetime
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import (Layout, Submit,
-                                 Div, HTML, Field)
+from crispy_forms.layout import Layout
+from crispy_forms.layout import Submit
+from crispy_forms.layout import Div
+from crispy_forms.layout import HTML
+from crispy_forms.layout import Field
 
 from taggit.forms import TagField
 from cerebrum.fields import SlugField

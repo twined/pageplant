@@ -2,114 +2,41 @@
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse_lazy
 from django.db import transaction
 from django.shortcuts import redirect
-from django.utils.datastructures import MultiValueDictKeyError
-from django.views.generic import (
-    CreateView, ListView, UpdateView,
-    DeleteView, DetailView, View,
-    RedirectView
-)
 
-from taggit.models import Tag
-from cerebrum.views import LoginRequiredMixin, DispatchProtectionMixin
-from cerebrum.utils import json_response
-from imgin.views import (
-    BaseImageCreateView, AJAXBaseImageHandleUploadView,
-    AJAXBaseImageDeleteView, BaseImageListView, BaseAJAXFroalaBrowserView,
-    BaseAJAXFroalaUploadView
-)
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import ListView
+from django.views.generic import RedirectView
+from django.views.generic import UpdateView
+
+from cerebrum.mixins import LoginRequiredMixin
+from cerebrum.mixins import DispatchProtectionMixin
+from cerebrum.views import BaseAJAXCheckSlugView
+
+from imgin.views import BaseImageCreateView
+from imgin.views import AJAXBaseImageHandleUploadView
+from imgin.views import AJAXBaseImageDeleteView
+from imgin.views import BaseImageListView
+from imgin.views import BaseAJAXFroalaBrowserView
+from imgin.views import BaseAJAXFroalaUploadView
 
 import reversion
 from reversion.models import Version
 
-from ..models import Page, PageImage
 from ..forms import PageForm
+from ..models import Page
+from ..models import PageImage
 
 
-@login_required
-def get_keywords(request, *args, **kwargs):
-    keywords = request.GET['text']
-    return json_response({
-        'keywords': keywords,
-    })
-
-
-class AJAXGetKeywordsView(LoginRequiredMixin, View):
-    """
-    AJAX: Returns keywords from the text
-    Not yet implemented
-    """
-    def get(self, request, *args, **kwargs):
-        keywords = request.GET['text']
-        return json_response({'keywords': keywords})
-
-
-@login_required
-def checkslug(request, pk=None, *args, **kwargs):
-    if 'slug' not in request.GET:
-        # slug wasn't passed.
-        return json_response({
-            'status': 400,
-            'error_msg': 'No slug passed to pages::checkslug'
-        })
-
-    slug = request.GET['slug'].lower()
-
-    if pk:
-        # it's an edit. it's ok if it's the same as before
-        page = Page.objects.get(pk=pk)
-        if page.slug == slug:
-            return json_response({
-                'status': 200,
-            })
-
-    if Page.objects.all().filter(slug=slug):
-        return json_response({
-            'status': 300,
-            'error_msg': 'Overskriften eksisterer allerede'
-        })
-
-    return json_response({
-        'status': 200,
-    })
-
-
-class AJAXCheckSlugView(LoginRequiredMixin, View):
+class AJAXCheckSlugView(BaseAJAXCheckSlugView):
     """
     Checks given slug against the database
     """
     model = Page
-
-    def get(self, request, *args, **kwargs):
-        if 'slug' not in request.GET:
-            # slug wasn't passed.
-            return json_response({
-                'status': 400,
-                'error_msg': 'No slug passed to pages::checkslug'
-            })
-
-        slug = request.GET['slug'].lower()
-
-        if 'pk' in self.kwargs:
-            # it's an edit. it's ok if it's the same as before
-            obj = self.model.objects.get(pk=self.kwargs['pk'])
-            if obj.slug == slug:
-                return json_response({
-                    'status': 200,
-                })
-
-        if self.model.objects.all().filter(slug=slug):
-            return json_response({
-                'status': 300,
-                'error_msg': 'Overskriften eksisterer allerede'
-            })
-
-        return json_response({
-            'status': 200,
-        })
 
 
 class RevertPageView(LoginRequiredMixin, RedirectView):
@@ -119,7 +46,8 @@ class RevertPageView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         revision = Version.objects.get(pk=kwargs['revision_id'])
         revision.revision.revert()
-        return reverse_lazy('admin:pageplant:update', kwargs={'pk': kwargs['pk']})
+        return reverse_lazy(
+            'admin:pageplant:update', kwargs={'pk': kwargs['pk']})
 
 
 class ListPageView(LoginRequiredMixin, ListView):
@@ -194,20 +122,6 @@ class DeletePageView(LoginRequiredMixin, DeleteView):
         self.object.delete()
         return redirect(self.get_success_url())
 
-
-class AJAXAutoCompleteTagsView(View):
-    """
-    AJAX: Returns tags
-    """
-    def get(self, request, *args, **kwargs):
-        try:
-            tags = Tag.objects.filter(
-                name__istartswith=request.GET['query']).values_list(
-                    'name', flat=True)
-        except MultiValueDictKeyError:
-            tags = []
-
-        return json_response({'suggestions': list(tags)})
 
 # -image----------------------------------------------------------------
 

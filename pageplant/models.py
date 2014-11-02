@@ -11,14 +11,13 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db import models, transaction
+from django.db import models
+from django.db import transaction
 from django.template.defaultfilters import slugify
 
+import reversion
 import imgin.settings
 from imgin.models import BaseImage
-
-import reversion
-
 from taggit.managers import TaggableManager
 
 from .managers import PublishedPagesManager
