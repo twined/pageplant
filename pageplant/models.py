@@ -38,7 +38,11 @@ class BasePage(models.Model):
         (STATUS_PUBLISHED, 'Publisert'),
         (STATUS_DELETED, 'Slettet'),
     )
-
+    identifier = models.CharField(
+        max_length=255, verbose_name="Id-nøkkel",
+        help_text="Kort beskrivelse av siden til bruk i admin-delen",
+        blank=True, null=True
+    )
     language = models.CharField(max_length=10, blank=True)
     header = models.CharField(
         max_length=255, null=False, blank=False,
@@ -51,6 +55,8 @@ class BasePage(models.Model):
     created = models.DateTimeField(
         auto_now_add=True, verbose_name="Opprettet")
     updated = models.DateTimeField(auto_now=True, verbose_name="Endret")
+    is_partial = models.BooleanField(
+        default=False, verbose_name="Sidefragment")
     publish_at = models.DateTimeField(
         default=datetime.now, verbose_name='Publiseringstidspunkt')
     published = models.DateTimeField(

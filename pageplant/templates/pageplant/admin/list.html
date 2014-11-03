@@ -20,7 +20,8 @@
                 <col span="1" style="width: 30px;">
                 {% endif %}
                 <col span="1" style="width: 60px;">
-                <col span="1" style="">
+                <col span="1" style="width: 200px">
+                <col span="1">
                 <col span="3" style="width: 60px;">
                 <col span="1" style="width: 40px;">
             </colgroup>
@@ -32,6 +33,7 @@
                     {% endif %}
                     <th></th>
                     <th>Tittel</th>
+                    <th>Identifiseringsnøkkel</th>
                     <th class="center-text">Opprettet</th>
                     <th>Endret</th>
                     <th>Bruker</th>
@@ -40,6 +42,18 @@
             </thead>
             <tbody>
         {% for page in pages %}
+            {% ifchanged page.is_partial %}
+                {% if page.is_partial %}
+                    <tr class="success">
+                        <td colspan="8" style="background-color: #767676;color: #fff;" class="small"><strong>Fragmenter</strong></td>
+                    </tr>
+                {% else %}
+                    <tr class="success">
+                    <td colspan="8" style="background-color: #767676;color: #fff;" class="small"><strong>Fullverdige sider</strong></td>
+                    </tr>
+                {% endif %}
+
+            {% endifchanged %}
                     <tr>
                         <td class="text-mono"><small><span class="text-muted">#</span>{{ page.pk|stringformat:"03d" }}</small></td>
                         {% if pageplant_settings.multilanguage %}
@@ -52,6 +66,9 @@
                         </td>
                         <td>
                             {{ page.header }}
+                        </td>
+                        <td>
+                            {{ page.identifier }}
                         </td>
                         <td class="center-text text-muted"><small>{{ page.created|date:"d/m/y" }}</small></td>
                         <td class="center-text text-muted"><small>{{ page.updated|date:"d/m/y" }}</small></td>

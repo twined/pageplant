@@ -61,6 +61,8 @@ class BasePageForm(forms.ModelForm):
             Div(
                 # 2
                 Div(  # span7
+                    Field('is_partial'),
+                    Field('identifier'),
                     Field(
                         'language'
                     ),

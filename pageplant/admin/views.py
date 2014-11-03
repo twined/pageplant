@@ -46,7 +46,7 @@ class BaseListPageView(LoginRequiredMixin, ListView):
     template_name = "pageplant/admin/list.html"
 
     def get_queryset(self):
-        return self.model.objects.order_by('status', '-pk')
+        return self.model.objects.order_by('-is_partial', 'status', '-pk')
 
 
 class BaseViewPageView(LoginRequiredMixin, DetailView):
