@@ -122,3 +122,22 @@ class BasePageForm(forms.ModelForm):
     class Meta:
         model = BasePage
         exclude = ('user',)
+
+
+class BaseTreePageForm(BasePageForm):
+    def __init__(self, *args, **kwargs):
+        super(BaseTreePageForm, self).__init__(*args, **kwargs)
+        self.helper.layout.insert(
+            0,
+            Div(  # md-12
+                Field(
+                    'parent',
+                    css_class="selectpicker",
+                ),
+                css_class="col-md-6 row",
+            ),
+        )
+
+    class Meta:
+        model = BasePage
+        exclude = ('user',)

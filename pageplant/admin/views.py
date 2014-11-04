@@ -26,6 +26,7 @@ from reversion.models import Version
 
 from ..forms import BasePageForm
 from ..models import BasePage
+from ..models import BaseTreePage
 from ..models import BasePageImage
 
 
@@ -47,6 +48,15 @@ class BaseListPageView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.order_by('-is_partial', 'status', '-pk')
+
+
+class BaseListTreePageView(LoginRequiredMixin, ListView):
+    model = BaseTreePage
+    context_object_name = "pages"
+    template_name = "pageplant/admin/list_tree.html"
+
+    def get_queryset(self):
+        return self.model.objects.filter(level=0).order_by('-is_partial', 'status', '-pk')
 
 
 class BaseViewPageView(LoginRequiredMixin, DetailView):

@@ -16,6 +16,7 @@ setup(
     install_requires=[
         "django-reversion >= 1.8.4",
         "django-classy-tags",
+        "django-mptt",
     ],
     zip_safe=False,
 )

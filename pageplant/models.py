@@ -17,6 +17,7 @@ from django.template.defaultfilters import slugify
 
 import reversion
 import imgin.settings
+from mptt.models import MPTTModel, TreeForeignKey
 from imgin.models import BaseImage
 from taggit.managers import TaggableManager
 
@@ -93,6 +94,17 @@ class BasePage(models.Model):
     class Meta:
         ordering = ('-created',)
         abstract = True
+
+
+class BaseTreePage(MPTTModel, BasePage):
+    parent = TreeForeignKey(
+        'self', null=True, blank=True, related_name='children')
+
+    class Meta:
+        abstract = True
+
+    class MPTTMeta:
+        pass
 
 
 def create_initial_revision(sender, **kwargs):
