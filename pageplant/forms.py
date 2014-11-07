@@ -13,6 +13,7 @@ from crispy_forms.layout import Field
 
 from taggit.forms import TagField
 from cerebrum.fields import SlugField
+from cerebrum.fields import StatusField
 
 from .models import BasePage
 from .settings import PAGEPLANT_SETTINGS
@@ -68,7 +69,6 @@ class BasePageForm(forms.ModelForm):
                     ),
                     Field(
                         'header',
-                        css_class="col-md-12 input-lg"
                     ),
                     SlugField(
                         'slug',
@@ -77,9 +77,8 @@ class BasePageForm(forms.ModelForm):
                 ),
                 # Right column
                 Div(
-                    Field('status',
-                          css_class=""),
-                    css_class='col-md-2',
+                    StatusField('status'),
+                    css_class='col-md-2 well',
                 ),
                 css_class="row",
             ),
