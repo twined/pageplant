@@ -171,24 +171,24 @@ class BasePageImage(BaseImage):
     @staticmethod
     def get_create_url(*args, **kwargs):
         return reverse(
-            'admin:pageplant:pageimage-create'
+            'admin:pages:pageimage-create'
         )
 
     def get_delete_url():
         return reverse(
-            'admin:pageplant:pageimage-delete'
+            'admin:pages:pageimage-delete'
         )
 
     @staticmethod
     def get_upload_url(*args, **kwargs):
         return reverse(
-            'admin:pageplant:pageimage-upload'
+            'admin:pages:pageimage-upload'
         )
 
     @staticmethod
     def get_list_url(*args, **kwargs):
         return reverse(
-            'admin:pageplant:pageimage-list'
+            'admin:pages:pageimage-list'
         )
 
     class Meta:

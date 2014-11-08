@@ -3,21 +3,21 @@
 {% load static from staticfiles %}
 {% block css_extra %}
     <!-- froala css includes -->
-    <link href="{% static 'js/libs/froala/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'js/libs/froala/css/froala_editor.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'js/libs/froala/css/themes/gray.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin/js/libs/froala/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin/js/libs/froala/css/froala_editor.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin/js/libs/froala/css/themes/gray.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static editor_css %}" rel="stylesheet" type="text/css" />
 {% endblock css_extra %}
 
 {% block extra_js %}
-<script type="text/javascript" src="{% static 'js/admin/pageplant.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'admin/js/pageplant.js' %}" charset="utf-8"></script>
 
 <!-- froala js includes -->
-<script src="{% static 'js/libs/froala/js/froala_editor.min.js' %}"></script>
-<script src="{% static 'js/libs/froala/js/plugins/video.min.js' %}"></script>
-<script src="{% static 'js/libs/froala/js/plugins/media_manager.min.js' %}"></script>
-<script src="{% static 'js/libs/froala/js/plugins/block_styles.min.js' %}"></script>
-<script src="{% static 'js/libs/froala/js/langs/nb.js' %}"></script>
+<script src="{% static 'admin/js/libs/froala/js/froala_editor.min.js' %}"></script>
+<script src="{% static 'admin/js/libs/froala/js/plugins/video.min.js' %}"></script>
+<script src="{% static 'admin/js/libs/froala/js/plugins/media_manager.min.js' %}"></script>
+<script src="{% static 'admin/js/libs/froala/js/plugins/block_styles.min.js' %}"></script>
+<script src="{% static 'admin/js/libs/froala/js/langs/nb.js' %}"></script>
 {% endblock extra_js %}
 
 {% block content %}
