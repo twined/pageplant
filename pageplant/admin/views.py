@@ -1,7 +1,6 @@
 # pages.py
 
 from django.conf import settings
-from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.db import transaction
 from django.shortcuts import redirect
@@ -13,8 +12,9 @@ from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
 
-from cerebrum.mixins import LoginRequiredMixin
 from cerebrum.mixins import DispatchProtectionMixin
+from cerebrum.mixins import FormMessagesMixin
+from cerebrum.mixins import LoginRequiredMixin
 
 from imgin.views import BaseImageCreateView
 from imgin.views import AJAXBaseImageHandleUploadView
@@ -56,7 +56,8 @@ class BaseListTreePageView(LoginRequiredMixin, ListView):
     template_name = "pageplant/admin/list_tree.html"
 
     def get_queryset(self):
-        return self.model.objects.filter(level=0).order_by('-is_partial', 'status', '-pk')
+        return self.model.objects.filter(level=0).\
+            order_by('-is_partial', 'status', '-pk')
 
 
 class BaseViewPageView(LoginRequiredMixin, DetailView):
@@ -64,45 +65,41 @@ class BaseViewPageView(LoginRequiredMixin, DetailView):
     template_name = "pageplant/admin/detail.html"
 
 
-class BaseCreatePageView(DispatchProtectionMixin,
-                         LoginRequiredMixin, CreateView):
+class BaseCreatePageView(FormMessagesMixin,
+                         DispatchProtectionMixin,
+                         LoginRequiredMixin,
+                         CreateView):
+
     form_class = BasePageForm
+    form_valid_message = "Siden er lagret"
+    form_invalid_message = "Rett feilene under"
     template_name = "pageplant/admin/form.html"
     success_url = reverse_lazy('admin:pages:list')
 
     def form_valid(self, form):
         with transaction.atomic(), reversion.create_revision():
-            self.object = form.save(commit=False)
-            self.object.user = self.request.user
-            messages.success(self.request, "Siden er lagret.",
-                             extra_tags='msg')
+            form.instance.user = self.request.user
             reversion.set_user(self.request.user)
         return super(BaseCreatePageView, self).form_valid(form)
 
-    def form_invalid(self, form):
-        messages.error(self.request, "Rett feilene under")
-        return super(BaseCreatePageView, self).form_invalid(form)
 
+class BaseUpdatePageView(FormMessagesMixin,
+                         DispatchProtectionMixin,
+                         LoginRequiredMixin,
+                         UpdateView):
 
-class BaseUpdatePageView(DispatchProtectionMixin,
-                         LoginRequiredMixin, UpdateView):
     model = BasePage
     form_class = BasePageForm
+    form_valid_message = "Siden er oppdatert"
+    form_invalid_message = "Rett feilene under"
     template_name = "pageplant/admin/form.html"
     success_url = reverse_lazy('admin:pages:list')
 
     def form_valid(self, form):
         with transaction.atomic(), reversion.create_revision():
-            self.object = form.save(commit=False)
-            self.object.user = self.request.user
-            messages.success(self.request, "Endringen var vellykket.",
-                             extra_tags='msg')
+            form.instance.user = self.request.user
             reversion.set_user(self.request.user)
             return super(BaseUpdatePageView, self).form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "Rett feilene under")
-        return super(BaseUpdatePageView, self).form_invalid(form)
 
     def get_context_data(self, **kwargs):
         context = super(BaseUpdatePageView, self).get_context_data(**kwargs)
