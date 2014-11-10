@@ -67,13 +67,6 @@ $(document).ready(function() {
         headers: { "X-CSRFToken": getCookie("csrftoken") }
     });
 
-    // backbone
-    new app.Posts.MainView();
-    new app.Posts.HeaderView({header: $titleEl, slug: $slugEl});
-    // no lead on this page
-    // new app.Posts.LeadView({lead: $leadEl});
-    new app.Posts.ToggleTemplateLockView();
-
     // autocomplete tags
     $tagsEl.autocomplete({
         serviceUrl: 'autocomplete-tags/',
@@ -83,6 +76,7 @@ $(document).ready(function() {
     });
     // froala editor
     $editorEl.editable({
+        beautifyCode: false,
         theme: 'gray',
         language: 'nb',
         inlineMode: false,
@@ -106,5 +100,8 @@ $(document).ready(function() {
     });
 
     // backbone
+        // backbone
     new app.Posts.MainView();
+    new app.Posts.HeaderView({header: $titleEl, slug: $slugEl});
+    new app.Posts.ToggleTemplateLockView();
 });
