@@ -80,7 +80,8 @@ class BaseCreatePageView(FormMessagesMixin,
         with transaction.atomic(), reversion.create_revision():
             form.instance.user = self.request.user
             reversion.set_user(self.request.user)
-        return super(BaseCreatePageView, self).form_valid(form)
+            ret = super(BaseCreatePageView, self).form_valid(form)
+            return ret
 
 
 class BaseUpdatePageView(FormMessagesMixin,
@@ -99,7 +100,8 @@ class BaseUpdatePageView(FormMessagesMixin,
         with transaction.atomic(), reversion.create_revision():
             form.instance.user = self.request.user
             reversion.set_user(self.request.user)
-            return super(BaseUpdatePageView, self).form_valid(form)
+            ret = super(BaseUpdatePageView, self).form_valid(form)
+            return ret
 
     def get_context_data(self, **kwargs):
         context = super(BaseUpdatePageView, self).get_context_data(**kwargs)

@@ -88,9 +88,6 @@ $(document).ready(function() {
         },
 
         defaultImageWidth: 0,
-        defaultBlockStyle: {
-            'f-test': 'Test'
-        },
         minHeight: 300,
         height: 500,
         plainPaste: true
