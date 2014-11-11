@@ -64,6 +64,11 @@ class BaseViewPageView(LoginRequiredMixin, DetailView):
     model = BasePage
     template_name = "pageplant/admin/detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(BaseViewPageView, self).get_context_data(**kwargs)
+        context['editor_css'] = settings.PAGEPLANT_SETTINGS['editor_css']
+        return context
+
 
 class BaseCreatePageView(FormMessagesMixin,
                          DispatchProtectionMixin,
@@ -82,6 +87,11 @@ class BaseCreatePageView(FormMessagesMixin,
             reversion.set_user(self.request.user)
             ret = super(BaseCreatePageView, self).form_valid(form)
             return ret
+
+    def get_context_data(self, **kwargs):
+        context = super(BaseCreatePageView, self).get_context_data(**kwargs)
+        context['editor_css'] = settings.PAGEPLANT_SETTINGS['editor_css']
+        return context
 
 
 class BaseUpdatePageView(FormMessagesMixin,

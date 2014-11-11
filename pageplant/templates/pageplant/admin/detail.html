@@ -1,21 +1,30 @@
 {% extends "admin/base.html" %}
+{% load static %}
+{% block css_extra %}
+<link href="{% static 'admin/js/libs/froala/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin/js/libs/froala/css/froala_editor.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'admin/js/libs/froala/css/themes/gray.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static editor_css %}" rel="stylesheet" type="text/css" />
+{% endblock css_extra %}
 {% block content %}
-<h1>Sider – Vis</h1>
+<h1>Vis side</h1>
 
 <section class="panel panel-default">
     <section class="panel-body">
-        {{ page.body|safe }}
+        <div class="froala-element">
+            {{ page.body|safe }}
+        </div>
     </section>
 </section>
 <div class="form-actions">
-    <a href="{% url 'admin:pages:list' %}" class="btn btn-primary">
+    <a href="{% url 'admin:pages:list' %}" class="btn btn-default">
         <i class="fa fa-list fa-fw"></i> Tilbake til oversikten
     </a>
     <a href="{% url 'admin:pages:update' page.pk %}" class="btn btn-default">
         <i class="fa fa-edit fa-fw"></i> Editer siden
     </a>
-    <a href="{% url 'admin:pages:delete' page.pk %}" class="btn btn-danger">
-        <i class="fa fa-edit fa-fw"></i> Slett siden
+    <a href="{% url 'admin:pages:delete' page.pk %}" class="btn btn-default">
+        <i class="fa fa-trash fa-fw"></i> Slett siden
     </a>
 </div>
 {% endblock content %}
