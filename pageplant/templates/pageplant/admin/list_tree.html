@@ -104,12 +104,16 @@
                             </ul>
                         </td>
                     </tr>
-
+{# ---- children ---- #}
                         {% for child in page.get_children.all %}
                         <tr>
                             <td></td>
-                            <td><i class="fa fa-arrow-circle-o-right"></i></td>
+                            <td></td>
+                            <td></td>
                             <td>
+                                <i class="fa fa-arrow-circle-o-right m-r-sm"></i> {{ child.header }}
+                            </td>
+                            <td class="text-mono">
                                 {{ child.identifier }}
                             </td>
                         </tr>
