@@ -26,6 +26,7 @@
                 <col span="1" style="width: 60px;">
                 <col span="1" style="width: 60px;">
                 <col span="1" style="width: 60px;">
+                <col span="1" style="width: 60px;">
                 <col span="1" style="width: 40px;">
             </colgroup>
             <thead>
@@ -37,6 +38,7 @@
                     <th></th>
                     <th>Tittel</th>
                     <th>Identifiseringsnøkkel</th>
+                    <th>URL</th>
                     <th class="center-text">Opprettet</th>
                     <th>Endret</th>
                     <th>Bruker</th>
@@ -49,11 +51,11 @@
             {% ifchanged page.is_partial %}
                 {% if page.is_partial %}
                     <tr class="success">
-                        <td colspan="8" style="background-color: #767676;color: #fff;" class="small"><strong>Fragmenter</strong></td>
+                        <td colspan="10" style="background-color: #767676;color: #fff;" class="small"><strong>Fragmenter</strong></td>
                     </tr>
                 {% else %}
                     <tr class="success">
-                    <td colspan="8" style="background-color: #767676;color: #fff;" class="small"><strong>Fullverdige sider</strong></td>
+                    <td colspan="10" style="background-color: #767676;color: #fff;" class="small"><strong>Fullverdige sider</strong></td>
                     </tr>
                 {% endif %}
 
@@ -73,6 +75,9 @@
                         </td>
                         <td>
                             {{ page.identifier }}
+                        </td>
+                        <td class="text-mono">
+                            {{ page.slug }}
                         </td>
                         <td class="center-text text-muted"><small>{{ page.created|date:"d/m/y" }}</small></td>
                         <td class="center-text text-muted"><small>{{ page.updated|date:"d/m/y" }}</small></td>
@@ -115,6 +120,38 @@
                             </td>
                             <td class="text-mono">
                                 {{ child.identifier }}
+                            </td>
+                            <td class="text-mono">
+                                {{ child.slug }}
+                            </td>
+                            <td class="center-text text-muted"><small>{{ child.created|date:"d/m/y" }}</small></td>
+                            <td class="center-text text-muted"><small>{{ child.updated|date:"d/m/y" }}</small></td>
+                            <td class="text-muted"><small>{{ child.user }}</small></td>
+                            <td>
+                                <a class="dropdown-toggle ddbutton" data-toggle="dropdown">
+                                      <i class="fa fa-bars"></i>
+                                </a>
+                                <ul class="dropdown-menu" style="right: 0; left: auto;">
+                                    <li>
+                                        <a href="{% url 'admin:pages:view' child.pk %}">
+                                            <i class="fa fa-search m-r-sm"> </i>
+                                            Vis side
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'admin:pages:update' child.pk %}">
+                                            <i class="fa fa-edit m-r-sm"> </i>
+                                            Endre side
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{% url 'admin:pages:delete' child.pk %}">
+                                            <i class="fa fa-trash-o m-r-sm"> </i>
+                                            Slett side
+                                        </a>
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
                         {% endfor %}
